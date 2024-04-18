@@ -5,8 +5,8 @@ package vo;
 // table 속성을 가지면 domain이라고 부를 수 있다.
 
 public class Dept {
-	public int depNo;
-	public String dName;
+	public int deptNo;
+	public String dname;
 	public String loc;
 
 }
