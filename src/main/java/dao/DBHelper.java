@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.*;
 import java.io.*;
 
-	// C:/oracle_wallet/Wallet_goodeeShop
+// C:/oracle_wallet/Wallet_goodeeShop
 public class DBHelper {
 	public static Connection getConnection() throws Exception {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -17,6 +17,7 @@ public class DBHelper {
 		FileReader fr = new FileReader("D:\\dev\\auth\\oracle.properties");
 		Properties prop = new Properties();
 		prop.load(fr);
+		
 		String dbPw = prop.getProperty("pw");
 
 		conn = DriverManager.getConnection(dbUrl, dbUser, dbPw);
@@ -24,7 +25,7 @@ public class DBHelper {
 		return conn;
 	}
 	
-	// getConnetcion() 디버깅
+	// getConnection() 디버깅
 	public static void main(String[] args) throws Exception {
 		Connection conn = new DBHelper().getConnection();
 		System.out.println("conn: " + conn);

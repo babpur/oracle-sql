@@ -8,7 +8,7 @@ import vo.Dept;
 public class DeptDAO {
 	// Map 사용
 	public static ArrayList<HashMap<String, Object>> selectDeptOnOffList() 
-														throws Exception {
+			throws Exception {
 		ArrayList<HashMap<String, Object>> list = new ArrayList<>();
 		
 		Connection conn = DBHelper.getConnection();
@@ -30,7 +30,8 @@ public class DeptDAO {
 	
 	
 	// VO 사용
-	public static ArrayList<Dept> selectDeptList() throws Exception {
+	public static ArrayList<Dept> selectDeptList() 
+			throws Exception {
 		ArrayList<Dept> list = new ArrayList<>();
 		
 		Connection conn = DBHelper.getConnection();
@@ -41,9 +42,9 @@ public class DeptDAO {
 		ResultSet rs = stmt.executeQuery();
 		while(rs.next()) {
 			Dept d = new Dept();
-			d.deptNo = rs.getInt("deptNo");
-			d.dname	= rs.getString("dname");
-			d.loc = rs.getString("loc");
+			d.setDeptNo(rs.getInt("deptNo"));
+			d.setDname(rs.getString("dname"));
+			d.setLoc(rs.getString("loc"));
 			list.add(d);
 		}
 		

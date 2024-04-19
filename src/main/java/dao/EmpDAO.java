@@ -9,7 +9,7 @@ import vo.Dept;
 public class EmpDAO {
 	// join으로 Map을 사용하는 겨우
 	public static ArrayList<HashMap<String, Object>> selectEmpAndDeptList()
-													throws Exception {
+			throws Exception {
 		ArrayList<HashMap<String, Object>> list = new ArrayList<>();
 	
 		Connection conn = DBHelper.getConnection();
@@ -32,7 +32,8 @@ public class EmpDAO {
 	}
 	
 	// VO 사용
-	public static ArrayList<Emp> selectEmpList() throws Exception {
+	public static ArrayList<Emp> selectEmpList() 
+			throws Exception {
 		ArrayList<Emp> list = new ArrayList<>();
 		
 		Connection conn = DBHelper.getConnection();
@@ -43,9 +44,9 @@ public class EmpDAO {
 		ResultSet rs = stmt.executeQuery();
 		while(rs.next()) {
 			Emp e = new Emp();
-			e.empNo = rs.getInt("empNo");
-			e.ename = rs.getString("ename");
-			e.sal = rs.getDouble("sal");
+			e.setEmpNo(rs.getInt("empNo"));
+			e.setEname(rs.getString("ename"));
+			e.setSal(rs.getDouble("sal"));
 			list.add(e);
 		}
 		
