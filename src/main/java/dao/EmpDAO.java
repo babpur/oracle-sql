@@ -7,7 +7,94 @@ import vo.Emp;
 import vo.Dept;
 
 public class EmpDAO {
-	// join으로 Map을 사용하는 겨우
+	// q003Case
+	public static ArrayList<HashMap<String, String>> selectJobCaseList() 
+			throws Exception {
+		
+		ArrayList<HashMap<String, String>> list =
+				new ArrayList<>();
+		
+		Connection conn = DBHelper.getConnection();
+		String sql ="SELECT ename, job,"
+			+ " CASE"
+			+ " WHEN job = 'PRESIDENT' THEN '빨강'"
+			+ " WHEN job = 'MANAGER' THEN '주황'"
+			+ " WHEN job = 'ANALYST' THEN '노랑'"
+			+ " WHEN job = 'CLERK' THEN '초록'"
+			+ " ELSE '파랑' END color"
+			+ " FROM emp"
+			+ " ORDER BY (CASE "
+			+ " WHEN color = '빨강' THEN 1"
+			+ " WHEN color = '주황' THEN 2"
+			+ " WHEN color = '노랑' THEN 3"
+			+ " WHEN color = '초록' THEN 4"
+			+ " ELSE 5 END) ASC";
+	
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();
+
+		while(rs.next()) {
+			HashMap<String, String> m = new HashMap<>();
+			m.put("ename", rs.getString("ename"));
+			m.put("job", rs.getString("job"));
+			m.put("color", rs.getString("color"));
+			list.add(m);
+		}
+		conn.close();
+		
+		return list;
+	}
+	
+	// DEPTNO 뒤 부서별 인원을 같이 조회하는 method
+	public static ArrayList<HashMap<String, Integer>> selectDeptNoCntList() 
+			throws Exception {
+		
+		ArrayList<HashMap<String, Integer>> list =
+				new ArrayList<>();
+		Connection conn = DBHelper.getConnection();
+		
+		// COUNT(*)의 *은 모든 열이 아니고 rowid를 가리킨다.
+		String sql = "SELECT count(*) cnt, deptno deptNo"
+			+ " FROM emp"
+			+ " WHERE deptno IS NOT NULL"
+			+ " GROUP BY deptno"
+			+ " ORDER BY deptno ASC";	
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();
+		
+		while(rs.next()) {
+			HashMap<String, Integer> m = new HashMap<>();
+			m.put("cnt", rs.getInt("cnt"));
+			m.put("deptNo", rs.getInt("deptNo"));
+			list.add(m);
+		}
+		conn.close();
+		return list; // 구현 후에 수정
+	}
+	
+	// 중복값을 제외한 DEPTNO 목록을 출력하는 method
+	public static ArrayList<Integer> selectDeptNoList() 
+			throws Exception {
+		ArrayList<Integer> list = new ArrayList<>();
+		
+		Connection conn = DBHelper.getConnection();
+		String sql = "SELECT DISTINCT deptno deptNo" // 3. deptno 4. deptno -> deptNo 5.DISTINCT로 중복값 삭제
+				+ " FROM emp" // 1
+				+ " WHERE deptno IS NOT NULL" // 2
+				+ " ORDER BY deptno ASC"; 
+		
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			Integer i = rs.getInt("deptNo"); // wrapper 타입과 기본 타입 간 Auto Boxing
+			list.add(i);
+		}
+		conn.close();
+		
+		return list;
+	}
+	
+	// join으로 Map을 사용하는 경우
 	public static ArrayList<HashMap<String, Object>> selectEmpAndDeptList()
 			throws Exception {
 		ArrayList<HashMap<String, Object>> list = new ArrayList<>();
