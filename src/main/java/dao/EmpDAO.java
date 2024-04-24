@@ -7,6 +7,46 @@ import vo.Emp;
 import vo.Dept;
 
 public class EmpDAO {
+	// q005OrderBy.jsp
+	public static ArrayList<Emp> selectEmpListSort(String col, String sort) 
+			throws Exception {
+		
+		// 매개값 디버깅
+		System.out.println("EmpDAO.selectEmpListSort param col: " + col);
+		System.out.println("EmpDAO.selectEmpListSort param sort: " + sort);
+		
+		ArrayList<Emp> list = new ArrayList<>();
+		Connection conn = DBHelper.getConnection();
+		/*
+			동적 쿼리 --> 쿼리 문자열이 매개값에 따라 분기되어 차이가 나는 경우 
+				없다
+				empno ASC
+				empno DESC
+				ename ASC
+				ename DESC
+		*/
+		String sql = "SELECT empno, ename"
+				+ " FROM emp";
+		if(col != null && sort != null) {
+			sql = sql + " ORDER BY " + col + " " + sort;
+		}
+		PreparedStatement stmt = conn.prepareCall(sql);
+		
+		System.out.println("EmpDAO.selectEmpListSort param stmt: " + stmt);
+		ResultSet rs = stmt.executeQuery();
+		
+		while(rs.next()) {
+			Emp e = new Emp();
+			e.setEmpNo(rs.getInt("empno"));
+			e.setEname(rs.getString("ename"));
+			list.add(e);
+			
+		}
+		conn.close();
+		return list;
+	}
+	
+	
 	// q004WhereIn.jsp
 	public static ArrayList<Emp> selectEmpListByGrade(ArrayList<Integer> ckList)
 		throws Exception {
