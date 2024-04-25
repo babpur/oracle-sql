@@ -7,6 +7,89 @@ import vo.Emp;
 import vo.Dept;
 
 public class EmpDAO {
+	
+	// q007SelfJoin.jsp
+	// mgr, grade 별 or 하트
+	public static ArrayList<HashMap<String, Object>> selectEmpSelfJoin()
+		throws Exception {
+		
+		ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+		
+		Connection conn = DBHelper.getConnection();
+		
+		// e2.ename == null -> '&#128520;' e2.grade == null --> 0
+		
+		String sql = "SELECT e1.empno empNo, e1.ename ename, e1.grade grade,"
+				+ " NVL(e2.ename, '&#128520;') \"mgrName\", NVL(e2.grade, 0) \"mgrGrade\""
+				+ " FROM emp e1"
+				+ " LEFT OUTER JOIN emp e2"
+				+ " ON e1.mgr = e2.empno"
+				+ " ORDER BY e1.empno ASC"; 
+	
+		
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();
+		
+		System.out.println("stmt: " + stmt);
+
+		while(rs.next()) {
+			HashMap<String, Object> m = new HashMap<>();
+			m.put("empNo", rs.getInt("empNo"));
+			m.put("ename", rs.getString("ename"));
+			m.put("grade", rs.getInt("grade"));
+			m.put("mgrName", rs.getString("mgrName"));
+			m.put("mgrGrade", rs.getInt("mgrGrade"));
+			list.add(m);
+		}
+		conn.close();
+		return list;
+	}
+	
+	
+	// q006GroupBy.jsp
+	
+	// 받는 값이 int 타입 Integer
+	public static ArrayList<HashMap<String, Integer>> selectEmpSalStats() 
+		throws Exception {
+		
+		ArrayList<HashMap<String, Integer>> list = new ArrayList<>();
+		
+		Connection conn = DBHelper.getConnection();
+		
+		// emp 테이블의 등급별 집계
+		String sql = "SELECT grade,"
+				+ " COUNT(*) count,"
+				+ " SUM(sal) sum,"
+				+ " AVG(sal) avg,"
+				+ " MAX(sal) max,"
+				+ " MIN(sal) min"
+				+ " FROM emp"
+				+ " GROUP BY grade"
+				+ " ORDER BY grade ASC";
+		
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();
+		
+		System.out.println("stmt: " + stmt);
+		while(rs.next()) {
+			
+			HashMap<String, Integer> m = new HashMap<>();
+			m.put("grade", rs.getInt("grade"));
+			m.put("count", rs.getInt("count"));
+			m.put("sum", rs.getInt("sum"));
+			m.put("avg", rs.getInt("avg"));
+			m.put("max", rs.getInt("max"));
+			m.put("min", rs.getInt("min"));
+			
+			list.add(m);
+		
+		}
+		
+		conn.close();
+		
+		return list;
+	}
+	
 	// q005OrderBy.jsp
 	public static ArrayList<Emp> selectEmpListSort(String col, String sort) 
 			throws Exception {
@@ -40,7 +123,6 @@ public class EmpDAO {
 			e.setEmpNo(rs.getInt("empno"));
 			e.setEname(rs.getString("ename"));
 			list.add(e);
-			
 		}
 		conn.close();
 		return list;
