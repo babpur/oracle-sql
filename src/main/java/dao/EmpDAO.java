@@ -8,6 +8,36 @@ import vo.Dept;
 
 public class EmpDAO {
 	
+	// pw_history table -> pw 변경 이력(날짜) 표시
+	// pw 변경 일자의 최댓값만 뽑아서 최근 변경 일자의 패스워드와 로그인 시 입력한 패스워드가 일치하면 로그인 성공
+	
+	/*
+	 * -- SELECT == INLINE VIEW
+
+		SELECT e.empno, e.ename, ph.pw, ph.createdate
+		FROM emp e  INNER JOIN pw_history ph
+		ON e.empno = ph.empno
+		WHERE e.empno = 7369
+		ORDER BY createdate desc
+		OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY;
+	
+		-- == 
+		
+		-- emp 테이블의 pw 속성을 만들고 이력 테이블에 이력 입력 시마다 emp 테이블에 pw를 업데이트를 하면 조회 시 JOIN 없이도 조회가 가능하다
+		SELECT t.empno, t.ename
+		FROM
+		    (SELECT e.empno empno, e.ename ename, ph.pw pw, ph.createdate createdate
+		    FROM emp e  INNER JOIN pw_history ph
+		    ON e.empno = ph.empno
+		    WHERE e.empno = 7369
+		    ORDER BY createdate desc
+		    OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY) t
+		WHERE t.pw = '0000';
+	 */
+	
+	
+	
+	
 	// q007SelfJoin.jsp
 	// mgr, grade 별 or 하트
 	public static ArrayList<HashMap<String, Object>> selectEmpSelfJoin()
